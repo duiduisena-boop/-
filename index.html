@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>สื่อการเรียนการสอนวิชาภาษาไทย</title>
+  <!-- Google Fonts: Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            thai: ['Prompt', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      min-height: 100vh;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-area, #print-area * {
+        visibility: visible;
+      }
+      #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased flex flex-col min-h-screen">
+
+  <!-- ================= NAVBAR ================= -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="showScreen('home')">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white text-xl shadow-md">
+          <i class="fa-solid fa-book-open"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-lg text-slate-900 leading-tight">สื่อการเรียนการสอนวิชาภาษาไทย</h1>
+          <p class="text-xs text-slate-500">บทเรียนวิดีโอ & แบบทดสอบประจำบท ๔ เรื่อง</p>
+        </div>
+      </div>
+
+      <div id="nav-user-panel" class="hidden flex items-center gap-3">
+        <div class="hidden sm:flex items-center gap-3 bg-slate-100 py-1.5 px-3 rounded-full border border-slate-200">
+          <span class="text-amber-500 font-bold text-sm flex items-center gap-1">
+            <i class="fa-solid fa-star"></i> <span id="nav-xp">0</span> XP
+          </span>
+          <span class="text-slate-300">|</span>
+          <span class="text-indigo-600 font-semibold text-sm">ระดับ <span id="nav-level">1</span></span>
+        </div>
+        
+        <div class="flex items-center gap-2">
+          <span id="nav-avatar" class="text-2xl">👦</span>
+          <span id="nav-student-name" class="font-semibold text-sm text-slate-700 hidden md:inline">นักเรียน</span>
+          <button onclick="logout()" title="ออกจากระบบ" class="text-slate-400 hover:text-rose-500 text-sm p-1.5 ml-1 transition">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6">
+
+    <!-- 1. หน้าล็อกอิน -->
+    <section id="screen-login" class="max-w-md mx-auto my-8 bg-white p-8 rounded-3xl shadow-xl border border-slate-100">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto text-3xl mb-3 shadow-inner">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-800">เข้าสู่ระบบการเรียน</h2>
+        <p class="text-slate-500 text-sm mt-1">สื่อการเรียนการสอนวิชาภาษาไทย</p>
+      </div>
+
+      <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">เลือกตัวแทนตัวละคร (Avatar)</label>
+          <div class="grid grid-cols-6 gap-2 text-center text-2xl py-2" id="avatar-selector">
+            <button type="button" onclick="selectAvatar('👦')" class="avatar-opt p-2 rounded-xl bg-blue-50 border-2 border-blue-500">👦</button>
+            <button type="button" onclick="selectAvatar('👧')" class="avatar-opt p-2 rounded-xl hover:bg-slate-50 border border-slate-200">👧</button>
+            <button type="button" onclick="selectAvatar('🧑‍🎓')" class="avatar-opt p-2 rounded-xl hover:bg-slate-50 border border-slate-200">🧑‍🎓</button>
+            <button type="button" onclick="selectAvatar('🦊')" class="avatar-opt p-2 rounded-xl hover:bg-slate-50 border border-slate-200">🦊</button>
+            <button type="button" onclick="selectAvatar('🐼')" class="avatar-opt p-2 rounded-xl hover:bg-slate-50 border border-slate-200">🐼</button>
+            <button type="button" onclick="selectAvatar('🦉')" class="avatar-opt p-2 rounded-xl hover:bg-slate-50 border border-slate-200">🦉</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">ชื่อ - นามสกุล นักเรียน</label>
+          <input type="text" id="login-fullname" required placeholder="เช่น นายสมคิด ใฝ่รู้" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">ระดับชั้น</label>
+            <select id="login-grade" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm bg-white">
+              <option value="" disabled selected>เลือกระดับชั้น</option>
+              <option value="ปวช. 3/1">ปวช. 3/1</option>
+              <option value="ปวช. 3/2">ปวช. 3/2</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">เลขประจำตัว (5 หลัก)</label>
+            <input type="text" id="login-no" required placeholder="เช่น 65301" maxlength="5" minlength="5" pattern="[0-9]{5}" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5)" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm">
+          </div>
+        </div>
+
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-200 transition mt-4 flex items-center justify-center gap-2">
+          <span>เข้าสู่ระบบบทเรียน</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+    </section>
+
+    <!-- 2. หน้าหลัก (HOME DASHBOARD) -->
+    <section id="screen-home" class="hidden space-y-6">
+      <div class="bg-gradient-to-r from-blue-700 via-indigo-700 to-sky-600 rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+        <div class="relative z-10 max-w-xl">
+          <span class="bg-white/20 text-xs px-3 py-1 rounded-full uppercase tracking-wider font-semibold">แดชบอร์ดบทเรียน</span>
+          <h2 class="text-2xl md:text-3xl font-extrabold mt-2 mb-1">สวัสดี, <span id="home-student-name">นักเรียน</span>!</h2>
+          <p class="text-blue-100 text-sm md:text-base mb-2 leading-relaxed">
+            ชมคลิปและทำแบบทดสอบให้ครบทั้ง ๔ บท (บทละ ๑๐ ข้อ รวม ๔๐ ข้อ)
+          </p>
+          <div class="text-xs text-blue-200">
+            คะแนนสอบรวมทั้งหมด: <span id="total-score-banner" class="font-bold text-amber-300 text-sm">0 / 40</span> คะแนน
+          </div>
+        </div>
+      </div>
+
+      <!-- สถิติผู้เรียน -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-trophy"></i>
+          </div>
+          <div>
+            <div class="text-xs text-slate-500 font-medium">คะแนนรวม XP</div>
+            <div class="text-xl font-bold text-slate-800" id="stat-xp">0</div>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-book-bookmark"></i>
+          </div>
+          <div>
+            <div class="text-xs text-slate-500 font-medium">ชมคลิปครบ</div>
+            <div class="text-xl font-bold text-slate-800" id="stat-progress">0/4 บท</div>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-file-signature"></i>
+          </div>
+          <div>
+            <div class="text-xs text-slate-500 font-medium">ทำแบบทดสอบครบ</div>
+            <div class="text-xl font-bold text-slate-800" id="stat-quizzes-done">0/4 บท</div>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <div>
+            <div class="text-xs text-slate-500 font-medium">สถิติมินิเกม</div>
+            <div class="text-xl font-bold text-slate-800" id="stat-game">0 แต้ม</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- บทเรียนทั้ง 4 เรื่อง พร้อมสถานะสอบประจำบท -->
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+            <i class="fa-solid fa-clapperboard text-blue-600"></i> บทเรียน 4 เรื่อง และแบบทดสอบบทละ 10 ข้อ
+          </h3>
+          <span class="text-xs text-slate-500">คลิกเพื่อเข้าชมคลิปและทำข้อสอบ</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Card 1 -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div class="flex gap-4 items-start cursor-pointer" onclick="openLesson(0)">
+              <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl font-bold flex-shrink-0">๑</div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700">หลักภาษาไทย</span>
+                  <span id="badge-topic-0" class="text-xs text-slate-400 font-medium">ยังไม่เรียน</span>
+                </div>
+                <h4 class="font-bold text-slate-800 text-lg mt-1 hover:text-indigo-600 transition">ชนิดของคำในภาษาไทย</h4>
+                <p class="text-slate-500 text-xs mt-0.5">คำนาม คำสรรพนาม คำกริยา และคำวิเศษณ์</p>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-500" id="score-topic-0">ผลสอบ: ยังไม่สอบ</span>
+              <button onclick="startLessonQuiz(0)" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-3 py-1.5 rounded-xl transition flex items-center gap-1">
+                <i class="fa-solid fa-pen"></i> ทำข้อสอบบทที่ ๑ (10 ข้อ)
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div class="flex gap-4 items-start cursor-pointer" onclick="openLesson(1)">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold flex-shrink-0">๒</div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">การผันเสียง</span>
+                  <span id="badge-topic-1" class="text-xs text-slate-400 font-medium">ยังไม่เรียน</span>
+                </div>
+                <h4 class="font-bold text-slate-800 text-lg mt-1 hover:text-emerald-600 transition">ไตรยางศ์และการผันวรรณยุกต์</h4>
+                <p class="text-slate-500 text-xs mt-0.5">อักษร 3 หมู่ และหลักการผันวรรณยุกต์</p>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-500" id="score-topic-1">ผลสอบ: ยังไม่สอบ</span>
+              <button onclick="startLessonQuiz(1)" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-3 py-1.5 rounded-xl transition flex items-center gap-1">
+                <i class="fa-solid fa-pen"></i> ทำข้อสอบบทที่ ๒ (10 ข้อ)
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div class="flex gap-4 items-start cursor-pointer" onclick="openLesson(2)">
+              <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl font-bold flex-shrink-0">๓</div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700">ถ้อยคำสำนวน</span>
+                  <span id="badge-topic-2" class="text-xs text-slate-400 font-medium">ยังไม่เรียน</span>
+                </div>
+                <h4 class="font-bold text-slate-800 text-lg mt-1 hover:text-amber-600 transition">สำนวน สุภาษิต คำพังเพย</h4>
+                <p class="text-slate-500 text-xs mt-0.5">การวิเคราะห์ความหมายและบริบทนำไปใช้</p>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-500" id="score-topic-2">ผลสอบ: ยังไม่สอบ</span>
+              <button onclick="startLessonQuiz(2)" class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-semibold px-3 py-1.5 rounded-xl transition flex items-center gap-1">
+                <i class="fa-solid fa-pen"></i> ทำข้อสอบบทที่ ๓ (10 ข้อ)
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div class="flex gap-4 items-start cursor-pointer" onclick="openLesson(3)">
+              <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl font-bold flex-shrink-0">๔</div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700">ระดับภาษา</span>
+                  <span id="badge-topic-3" class="text-xs text-slate-400 font-medium">ยังไม่เรียน</span>
+                </div>
+                <h4 class="font-bold text-slate-800 text-lg mt-1 hover:text-rose-600 transition">คำราชาศัพท์และคำสุภาพ</h4>
+                <p class="text-slate-500 text-xs mt-0.5">คำราชาศัพท์หมวดสำคัญและคำสุภาพ</p>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-500" id="score-topic-3">ผลสอบ: ยังไม่สอบ</span>
+              <button onclick="startLessonQuiz(3)" class="text-xs bg-rose-600 hover:bg-rose-700 text-white font-semibold px-3 py-1.5 rounded-xl transition flex items-center gap-1">
+                <i class="fa-solid fa-pen"></i> ทำข้อสอบบทที่ ๔ (10 ข้อ)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- มินิเกม & เกียรติบัตร -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+        <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl p-5 text-white flex items-center justify-between shadow-lg">
+          <div>
+            <span class="bg-white/20 text-xs px-2.5 py-0.5 rounded-full font-semibold">คลังคำถาม 50 ข้อหมุนเวียน</span>
+            <h4 class="text-xl font-bold mt-1">เกมภาษาไทยสายฟ้าแลบ</h4>
+            <p class="text-amber-100 text-xs mt-0.5 mb-3">ตอบเร็ว ถูกต้อง รับแต้มสะสม XP</p>
+            <button onclick="startGame()" class="bg-white text-orange-600 hover:bg-amber-50 font-bold px-4 py-2 rounded-xl text-sm transition shadow">
+              <i class="fa-solid fa-gamepad"></i> เข้าเล่นเกม
+            </button>
+          </div>
+          <div class="text-5xl opacity-90 pr-2">🎮</div>
+        </div>
+
+        <div class="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-5 text-white flex items-center justify-between shadow-lg">
+          <div>
+            <span class="bg-white/20 text-xs px-2.5 py-0.5 rounded-full font-semibold">สรุปผลการประเมิน</span>
+            <h4 class="text-xl font-bold mt-1">เกียรติบัตรสำเร็จการศึกษา</h4>
+            <p class="text-emerald-100 text-xs mt-0.5 mb-3">ดูเกียรติบัตรสรุปคะแนนสอบทั้ง ๔ บท</p>
+            <button onclick="showCertificate()" class="bg-white text-emerald-700 hover:bg-emerald-50 font-bold px-4 py-2 rounded-xl text-sm transition shadow">
+              <i class="fa-solid fa-award"></i> ดูเกียรติบัตร
+            </button>
+          </div>
+          <div class="text-5xl opacity-90 pr-2">📜</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. หน้าเปิดดูคลิปวิดีโอ (LESSON VIEWER) -->
+    <section id="screen-lesson" class="hidden bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+        <button onclick="showScreen('home')" class="text-slate-500 hover:text-slate-800 text-sm font-semibold flex items-center gap-2">
+          <i class="fa-solid fa-arrow-left"></i> กลับสู่หน้าหลัก
+        </button>
+        <div class="flex items-center gap-2">
+          <span id="lesson-number-badge" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-bold text-xs">เรื่องที่ ๑</span>
+          <span class="text-xs text-emerald-600 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full">+100 XP เมื่อเรียนจบ</span>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div class="flex items-center justify-between">
+          <h3 id="lesson-title-display" class="text-2xl font-bold text-slate-900">ชื่อบทเรียน</h3>
+          <button id="btn-quiz-from-lesson" onclick="startLessonQuiz(currentLessonIndex)" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-4 py-2 rounded-xl transition shadow flex items-center gap-1.5">
+            <i class="fa-solid fa-pen-to-square"></i> ทำแบบทดสอบประจำบทนี้ (10 ข้อ)
+          </button>
+        </div>
+
+        <!-- Video Player ดึงไฟล์ในโฟลเดอร์โดยตรง -->
+        <div class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-lg border border-slate-800 flex items-center justify-center">
+          <video id="lesson-video-player" controls preload="metadata" class="w-full h-full object-contain">
+            <source id="lesson-video-source" src="video1.mp4" type="video/mp4">
+            เบราว์เซอร์ไม่รองรับการเล่นวิดีโอ
+          </video>
+        </div>
+
+        <!-- ประเด็นสำคัญ -->
+        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
+          <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-list-check text-blue-600"></i> สาระสำคัญประจำบทเรียน
+          </h4>
+          <ul id="lesson-bullet-points" class="list-disc list-inside text-sm text-slate-600 space-y-1.5"></ul>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-100 pt-6 mt-8 flex items-center justify-between">
+        <button id="btn-prev-lesson" onclick="prevLesson()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 text-sm hover:bg-slate-50 transition">
+          <i class="fa-solid fa-chevron-left mr-1"></i> เรื่องก่อนหน้า
+        </button>
+        <button onclick="completeCurrentLesson()" id="btn-complete-lesson" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-md transition flex items-center gap-2">
+          <i class="fa-solid fa-check-circle"></i> <span>บันทึกว่าชมคลิปจบแล้ว (+100 XP)</span>
+        </button>
+        <button id="btn-next-lesson" onclick="nextLesson()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm transition">
+          เรื่องถัดไป <i class="fa-solid fa-chevron-right ml-1"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- 4. หน้าทำแบบทดสอบประจำบท (10 ข้อ ต่อบท สุ่มสลับตำแหน่งตัวเลือก) -->
+    <section id="screen-quiz" class="hidden max-w-2xl mx-auto bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+        <div>
+          <span id="quiz-lesson-badge" class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-blue-100 text-blue-800">บทที่ ๑</span>
+          <h3 id="quiz-lesson-title" class="text-xl font-bold text-slate-800 mt-1">แบบทดสอบประจำบท</h3>
+        </div>
+        <div class="text-right">
+          <div class="text-xs text-slate-400">ข้อที่</div>
+          <div class="font-bold text-slate-700 text-base"><span id="quiz-current-num">1</span>/10</div>
+        </div>
+      </div>
+
+      <div id="quiz-body" class="space-y-5">
+        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+          <p id="quiz-question-text" class="text-lg font-semibold text-slate-800 leading-snug">
+            คำถามกำลังโหลด...
+          </p>
+        </div>
+        <div id="quiz-choices-container" class="space-y-2.5"></div>
+      </div>
+
+      <!-- ผลสอบประจำบท -->
+      <div id="quiz-result-panel" class="hidden text-center py-6 space-y-4">
+        <div class="text-6xl text-amber-400">🏆</div>
+        <h4 class="text-2xl font-extrabold text-slate-800" id="quiz-result-title">ผลการทดสอบประจำบท</h4>
+        
+        <div class="bg-slate-50 p-4 rounded-2xl max-w-xs mx-auto border border-slate-200">
+          <div class="text-xs text-slate-500">คะแนนที่ได้</div>
+          <div class="text-4xl font-extrabold text-blue-600 my-1">
+            <span id="quiz-score-display">0</span> / 10
+          </div>
+          <div class="text-xs text-emerald-600 font-semibold" id="quiz-xp-gain">+100 XP</div>
+        </div>
+
+        <div class="flex justify-center gap-3 pt-2">
+          <button onclick="showScreen('home')" class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition shadow">
+            กลับสู่หน้าหลัก
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. หน้ามินิเกมสายฟ้าแลบ (50 ข้อหมุนเวียน สุ่มสลับตัวเลือก) -->
+    <section id="screen-game" class="hidden max-w-2xl mx-auto bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+        <div class="flex items-center gap-2">
+          <button onclick="endGameEarly()" class="text-slate-400 hover:text-slate-700 text-sm">
+            <i class="fa-solid fa-arrow-left"></i>
+          </button>
+          <div>
+            <h3 class="font-bold text-slate-800">เกมภาษาไทยสายฟ้าแลบ</h3>
+            <div class="text-xs text-slate-500">สุ่ม 50 คำถาม ตอบให้ไวที่สุด!</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="text-right">
+            <span class="text-xs text-slate-400 block">เวลา</span>
+            <span id="game-timer" class="font-mono text-lg font-bold text-rose-500">30s</span>
+          </div>
+          <div class="text-right">
+            <span class="text-xs text-slate-400 block">คะแนน</span>
+            <span id="game-score" class="font-bold text-lg text-amber-500">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-sm mb-4 px-2">
+        <div class="flex gap-1 text-rose-500 text-lg" id="game-hearts"></div>
+        <div class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">
+          คอมโบ: <span id="game-combo">x0</span> 🔥
+        </div>
+      </div>
+
+      <div id="game-play-area" class="space-y-4">
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-2xl text-center shadow-inner">
+          <span class="text-xs bg-white/20 px-3 py-0.5 rounded-full font-medium">คำถามด่วน</span>
+          <h4 id="game-question" class="text-xl md:text-2xl font-bold mt-2">กำลังเริ่มเกม...</h4>
+        </div>
+        <div id="game-options" class="grid grid-cols-2 gap-3 pt-2"></div>
+      </div>
+
+      <div id="game-over-panel" class="hidden text-center py-6 space-y-4">
+        <div class="text-6xl text-rose-500 animate-bounce">⚡</div>
+        <h4 class="text-2xl font-extrabold text-slate-800">สิ้นสุดเกม!</h4>
+        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 max-w-xs mx-auto">
+          <div class="text-xs text-amber-700 font-semibold">คะแนนรอบนี้</div>
+          <div class="text-3xl font-extrabold text-amber-600 my-1" id="game-final-score">0</div>
+          <div class="text-xs text-slate-500">รับแต้มสะสม +<span id="game-xp-earned">0</span> XP</div>
+        </div>
+        <div class="flex justify-center gap-3 pt-2">
+          <button onclick="startGame()" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-sm transition">
+            <i class="fa-solid fa-rotate-right mr-1"></i> เล่นใหม่อีกครั้ง
+          </button>
+          <button onclick="showScreen('home')" class="px-5 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-sm transition">
+            กลับหน้าหลัก
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. หน้าเกียรติบัตร -->
+    <section id="screen-cert" class="hidden max-w-3xl mx-auto space-y-4">
+      <div class="flex items-center justify-between no-print">
+        <button onclick="showScreen('home')" class="text-slate-500 hover:text-slate-800 text-sm font-semibold flex items-center gap-2">
+          <i class="fa-solid fa-arrow-left"></i> กลับสู่หน้าหลัก
+        </button>
+        <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-xl text-sm shadow flex items-center gap-2">
+          <i class="fa-solid fa-print"></i> พิมพ์เกียรติบัตร
+        </button>
+      </div>
+
+      <div id="print-area" class="bg-white border-8 border-double border-amber-600 p-8 md:p-12 rounded-3xl shadow-2xl text-center relative overflow-hidden">
+        <div class="w-16 h-16 rounded-full bg-amber-100 text-amber-600 mx-auto flex items-center justify-center text-3xl mb-3 shadow-inner">
+          <i class="fa-solid fa-award"></i>
+        </div>
+        <h3 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-1">เกียรติบัตรฉบับนี้ให้ไว้เพื่อแสดงว่า</h3>
+        <h2 id="cert-student-name" class="text-3xl font-extrabold text-blue-900 my-3">ชื่อนักเรียน</h2>
+        
+        <p class="text-slate-600 text-sm max-w-lg mx-auto leading-relaxed">
+          ได้สำเร็จการศึกษาเนื้อหาครบตามหลักสูตรผ่าน
+          <br><strong class="text-slate-800 font-bold text-base">"สื่อการเรียนการสอนวิชาภาษาไทย"</strong>
+          <br>ผ่านการประเมินแบบทดสอบประจำบททั้ง ๔ เรื่อง รวม ๔๐ ข้อ
+        </p>
+
+        <div class="grid grid-cols-2 gap-4 max-w-md mx-auto my-6 py-3 border-y border-amber-200">
+          <div>
+            <div class="text-xs text-slate-400">ระดับชั้น / เลขประจำตัว</div>
+            <div id="cert-grade-no" class="font-bold text-slate-700 text-sm">-</div>
+          </div>
+          <div>
+            <div class="text-xs text-slate-400">คะแนนสอบรวม ๔ บท</div>
+            <div id="cert-score-status" class="font-bold text-emerald-600 text-sm">0 / 40 คะแนน</div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-end max-w-md mx-auto pt-6 text-xs text-slate-500">
+          <div class="text-center">
+            <div class="border-b border-slate-400 w-32 mx-auto mb-1"></div>
+            <div>ครูผู้สอนประจำวิชา</div>
+          </div>
+          <div class="text-center">
+            <div id="cert-date" class="font-semibold text-slate-700 mb-1">-</div>
+            <div>สื่อการเรียนรู้ออนไลน์</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400 mt-8 no-print">
+    <div class="max-w-6xl mx-auto px-4">
+      สื่อการเรียนการสอนวิชาภาษาไทย &copy; พัฒนาขึ้นเพื่อส่งเสริมการเรียนรู้วิชาภาษาไทย
+    </div>
+  </footer>
+
+  <!-- ================= JAVASCRIPT ================= -->
+  <script>
+    // 1. ระบบเสียง Sound Effect
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(freq = 440, type = 'sine', duration = 0.1) {
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    // 2. จัดการข้อมูลผู้เรียน
+    let currentUser = null;
+    let currentLessonIndex = 0;
+    let selectedAvatarTemp = '👦';
+
+    const defaultState = {
+      name: '',
+      grade: '',
+      no: '',
+      avatar: '👦',
+      xp: 0,
+      level: 1,
+      completedLessons: [false, false, false, false],
+      lessonScores: [null, null, null, null],
+      highScoreGame: 0
+    };
+
+    function loadUser() {
+      const saved = localStorage.getItem('thai_elearn_user_v6');
+      if (saved) {
+        currentUser = JSON.parse(saved);
+        updateUI();
+        showScreen('home');
+      } else {
+        showScreen('login');
+      }
+    }
+
+    function saveUser() {
+      if (currentUser) {
+        currentUser.level = Math.floor(currentUser.xp / 150) + 1;
+        localStorage.setItem('thai_elearn_user_v6', JSON.stringify(currentUser));
+        updateUI();
+      }
+    }
+
+    function selectAvatar(emoji) {
+      document.querySelectorAll('.avatar-opt').forEach(btn => {
+        btn.classList.remove('bg-blue-50', 'border-2', 'border-blue-500');
+        btn.classList.add('border-slate-200');
+        if (btn.innerText.trim() === emoji) {
+          btn.classList.add('bg-blue-50', 'border-2', 'border-blue-500');
+          btn.classList.remove('border-slate-200');
+        }
+      });
+      selectedAvatarTemp = emoji;
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      currentUser = {
+        ...defaultState,
+        name: document.getElementById('login-fullname').value.trim(),
+        grade: document.getElementById('login-grade').value,
+        no: document.getElementById('login-no').value.trim(),
+        avatar: selectedAvatarTemp,
+        completedLessons: [false, false, false, false],
+        lessonScores: [null, null, null, null]
+      };
+      saveUser();
+      playBeep(600, 'triangle', 0.2);
+      showScreen('home');
+    }
+
+    function logout() {
+      if (confirm('คุณต้องการออกจากระบบหรือไม่?')) {
+        localStorage.removeItem('thai_elearn_user_v6');
+        currentUser = null;
+        document.getElementById('login-form').reset();
+        showScreen('login');
+      }
+    }
+
+    // 3. สลับหน้าจอ
+    function showScreen(screenId) {
+      const player = document.getElementById('lesson-video-player');
+      if (player && screenId !== 'lesson') {
+        player.pause();
+      }
+
+      const screens = ['login', 'home', 'lesson', 'quiz', 'game', 'cert'];
+      screens.forEach(s => {
+        const el = document.getElementById(`screen-${s}`);
+        if (el) el.classList.add('hidden');
+      });
+
+      const target = document.getElementById(`screen-${screenId}`);
+      if (target) target.classList.remove('hidden');
+
+      const navPanel = document.getElementById('nav-user-panel');
+      if (screenId === 'login') {
+        navPanel.classList.add('hidden');
+      } else {
+        navPanel.classList.remove('hidden');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateUI() {
+      if (!currentUser) return;
+
+      document.getElementById('nav-avatar').innerText = currentUser.avatar;
+      document.getElementById('nav-student-name').innerText = currentUser.name;
+      document.getElementById('nav-xp').innerText = currentUser.xp;
+      document.getElementById('nav-level').innerText = currentUser.level;
+
+      document.getElementById('home-student-name').innerText = currentUser.name;
+      document.getElementById('stat-xp').innerText = currentUser.xp;
+
+      const completedCount = currentUser.completedLessons.filter(Boolean).length;
+      document.getElementById('stat-progress').innerText = `${completedCount}/4 บท`;
+
+      const quizzesDone = currentUser.lessonScores.filter(s => s !== null).length;
+      document.getElementById('stat-quizzes-done').innerText = `${quizzesDone}/4 บท`;
+
+      const totalScore = currentUser.lessonScores.reduce((acc, cur) => acc + (cur || 0), 0);
+      document.getElementById('total-score-banner').innerText = `${totalScore} / 40`;
+
+      document.getElementById('stat-game').innerText = `${currentUser.highScoreGame || 0} แต้ม`;
+
+      currentUser.completedLessons.forEach((done, idx) => {
+        const badge = document.getElementById(`badge-topic-${idx}`);
+        if (badge) {
+          badge.innerHTML = done 
+            ? '<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> เรียนแล้ว</span>'
+            : '<span class="text-slate-400 font-medium">ยังไม่เรียน</span>';
+        }
+      });
+
+      currentUser.lessonScores.forEach((score, idx) => {
+        const scoreLabel = document.getElementById(`score-topic-${idx}`);
+        if (scoreLabel) {
+          scoreLabel.innerHTML = score !== null 
+            ? `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-check"></i> สอบแล้ว: ${score}/10 คะแนน</span>`
+            : '<span class="text-slate-400">ผลสอบ: ยังไม่สอบ</span>';
+        }
+      });
+    }
+
+    // 4. บทเรียนและไฟล์วิดีโอ
+    const lessons = [
+      {
+        title: "ชนิดของคำในภาษาไทย",
+        badge: "เรื่องที่ ๑",
+        videoSrc: "video1.mp4",
+        bullets: [
+          "คำนาม: ใช้เรียกชื่อคน สัตว์ สิ่งของ สถานที่ (สามานยนาม, วิสามานยนาม, อาการนาม, ลักษณนาม, สมุหนาม)",
+          "คำสรรพนาม: คำใช้แทนคำนาม (บุรุษที่ ๑ ข้าพเจ้า, บุรุษที่ ๒ ท่าน เธอ, บุรุษที่ ๓ เขา พระองค์)",
+          "คำกริยา: แสดงอาการ การกระทำ สภาพ (อกรรมกริยา, สกรรมกริยา)",
+          "คำวิเศษณ์: ทำหน้าที่ขยายคำอื่นเพื่อบอกลักษณะ คุณภาพ หรือปริมาณ"
+        ]
+      },
+      {
+        title: "ไตรยางศ์และการผันวรรณยุกต์",
+        badge: "เรื่องที่ ๒",
+        videoSrc: "video2.mp4",
+        bullets: [
+          "อักษรกลาง (๙ ตัว): ก จ ด ต บ ป อ ฎ ฏ (ท่องจำ: ไก่จิกเด็กตายบนปากโอ่ง)",
+          "อักษรสูง (๑๑ ตัว): ข ฃ ฉ ฐ ถ ผ ฝ ศ ษ ส ห (ท่องจำ: ผีฝากถุงข้าวสารให้ฉัน)",
+          "อักษรต่ำ (๒๔ ตัว): แบ่งเป็นต่ำเดี่ยว ๑๐ ตัว และต่ำคู่ ๑๔ ตัว",
+          "กฎการผัน: อักษรกลางคำเป็นผันได้ ๕ เสียง, อักษรสูงผันได้ ๓ เสียง, อักษรต่ำผันได้ ๓ เสียง"
+        ]
+      },
+      {
+        title: "สำนวน สุภาษิต คำพังเพย",
+        badge: "เรื่องที่ ๓",
+        videoSrc: "video3.mp4",
+        bullets: [
+          "สำนวน: ถ้อยคำที่มีความหมายแฝง ไม่ตรงตามตัวอักษร เช่น ชักหน้าไม่ถึงหลัง, แกะดำ",
+          "สุภาษิต: ถ้อยคำที่เน้นคำสอน คติธรรมเตือนใจให้ประพฤติดี เช่น ทำดีได้ดี ทำชั่วได้ชั่ว",
+          "คำพังเพย: ถ้อยคำเปรียบเทียบเหตุการณ์ มีลักษณะเสียดสี เช่น ขี่ช้างจับตั๊กแตน, น้ำขึ้นให้รีบตัก"
+        ]
+      },
+      {
+        title: "คำราชาศัพท์และคำสุภาพ",
+        badge: "เรื่องที่ ๔",
+        videoSrc: "video4.mp4",
+        bullets: [
+          "หมวดร่างกาย: พระเศียร (ศีรษะ), พระเนตร (ดวงตา), พระกรรณ (หู), พระนาสิก (จมูก)",
+          "หมวดกริยา: เสวย (รับประทาน), บรรทม (นอน), พระราชสมภพ (เกิด)",
+          "คำสำหรับพระสงฆ์: ฉัน (กิน), จำวัด (นอน), อาพาธ (ป่วย)",
+          "คำสุภาพ: ผักทอดยอด (ผักบุ้ง), ปลาหาง (ปลาช่อน), ฟักเหลือง (ฟักทอง)"
+        ]
+      }
+    ];
+
+    function openLesson(index) {
+      currentLessonIndex = index;
+      const lesson = lessons[index];
+      
+      document.getElementById('lesson-number-badge').innerText = lesson.badge;
+      document.getElementById('lesson-title-display').innerText = lesson.title;
+
+      const videoPlayer = document.getElementById('lesson-video-player');
+      const videoSource = document.getElementById('lesson-video-source');
+      videoSource.src = lesson.videoSrc;
+      videoPlayer.load();
+
+      const listContainer = document.getElementById('lesson-bullet-points');
+      listContainer.innerHTML = '';
+      lesson.bullets.forEach(b => {
+        const li = document.createElement('li');
+        li.innerText = b;
+        listContainer.appendChild(li);
+      });
+
+      document.getElementById('btn-prev-lesson').style.visibility = index === 0 ? 'hidden' : 'visible';
+      document.getElementById('btn-next-lesson').style.visibility = index === lessons.length - 1 ? 'hidden' : 'visible';
+
+      const isCompleted = currentUser.completedLessons[index];
+      const btnComp = document.getElementById('btn-complete-lesson');
+      if (isCompleted) {
+        btnComp.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>ชมคลิปจบแล้ว</span>`;
+        btnComp.className = 'px-6 py-2.5 rounded-xl bg-slate-100 text-slate-400 font-semibold text-sm cursor-default';
+      } else {
+        btnComp.innerHTML = `<i class="fa-solid fa-check-circle"></i> <span>บันทึกว่าชมคลิปจบแล้ว (+100 XP)</span>`;
+        btnComp.className = 'px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-md transition flex items-center gap-2';
+      }
+
+      showScreen('lesson');
+    }
+
+    function prevLesson() {
+      if (currentLessonIndex > 0) openLesson(currentLessonIndex - 1);
+    }
+
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) openLesson(currentLessonIndex + 1);
+    }
+
+    function completeCurrentLesson() {
+      if (!currentUser.completedLessons[currentLessonIndex]) {
+        currentUser.completedLessons[currentLessonIndex] = true;
+        currentUser.xp += 100;
+        playBeep(880, 'triangle', 0.25);
+        saveUser();
+        openLesson(currentLessonIndex);
+        alert(`ยินดีด้วย! บันทึกการชม "${lessons[currentLessonIndex].title}" เรียบร้อย (+100 XP)`);
+      }
+    }
+
+    // 5. คลังข้อสอบ 4 บท บทละ 10 ข้อ
+    const lessonQuizzes = [
+      // บทที่ 1: ชนิดของคำ (10 ข้อ)
+      [
+        { q: "คำว่า 'ความซื่อสัตย์' และ 'การเรียน' จัดเป็นคำนามชนิดใด?", choices: ["อาการนาม", "สามานยนาม", "วิสามานยนาม", "ลักษณนาม"], ans: 0 },
+        { q: "คำว่า 'โขลง' ในประโยค 'ช้างป่า ๑ โขลง' เป็นคำชนิดใด?", choices: ["สมุหนาม", "ลักษณนาม", "อาการนาม", "วิสามานยนาม"], ans: 1 },
+        { q: "ในประโยค 'คุณครูกำลังสอนนักเรียน' คำว่า 'คุณครู' เป็นคำชนิดใด?", choices: ["คำสรรพนาม", "คำนาม", "คำกริยา", "คำวิเศษณ์"], ans: 1 },
+        { q: "คำสรรพนามบุรุษที่ ๑ ใช้แทนตัวบุคคลใด?", choices: ["ผู้ฟัง", "ผู้ที่ถูกกล่าวถึง", "ผู้พูด", "สิ่งของทั่วไป"], ans: 2 },
+        { q: "คำว่า 'ข้าพเจ้า' จัดเป็นคำสรรพนามบุรุษใด?", choices: ["บุรุษที่ ๒", "บุรุษที่ ๑", "บุรุษที่ ๓", "ไม่จัดเป็นบุรุษสรรพนาม"], ans: 1 },
+        { q: "คำกริยาที่ 'ไม่ต้องมีกรรมมารองรับ' เรียกว่าอะไร?", choices: ["สกรรมกริยา", "อกรรมกริยา", "วิกตรรถกริยา", "กริยานุเคราะห์"], ans: 1 },
+        { q: "ในประโยค 'น้องวิ่งเร็วมาก' คำว่า 'วิ่ง' เป็นคำกริยาประเภทใด?", choices: ["สกรรมกริยา", "กริยาช่วย", "อกรรมกริยา", "วิกตรรถกริยา"], ans: 2 },
+        { q: "คำว่า 'ไพเราะ' ในประโยค 'เธอพูดจาไพเราะ' ทำหน้าที่เป็นคำชนิดใด?", choices: ["คำนาม", "คำกริยา", "คำสรรพนาม", "คำวิเศษณ์"], ans: 3 },
+        { q: "ในประโยค 'สุนัขตัวสีขาวกำลังนอนหลับ' คำว่า 'สีขาว' ทำหน้าที่อะไร?", choices: ["ขยายคำนาม (สุนัข)", "เป็นประธานของประโยค", "เป็นคำกริยาหลัก", "ขยายคำว่านอน"], ans: 0 },
+        { q: "ข้อใดเป็นคำสรรพนามบุรุษที่ ๒ ทั้งหมด?", choices: ["ฉัน ข้าพเจ้า เรา", "ท่าน เธอ คุณ", "เขา มัน พระองค์", "ใคร อะไร ไหน"], ans: 1 }
+      ],
+      // บทที่ 2: ไตรยางศ์และการผันวรรณยุกต์ (10 ข้อ)
+      [
+        { q: "ไตรยางศ์ คือการแบ่งพยัญชนะไทยออกเป็นกี่หมู่?", choices: ["๒ หมู่", "๓ หมู่", "๔ หมู่", "๕ หมู่"], ans: 1 },
+        { q: "พยัญชนะในข้อใดคือ 'อักษรกลาง' ทั้งหมด?", choices: ["ข ฉ ถ ผ ส ห", "ก จ ด ต บ ป อ", "ค ง ช ซ ท พ", "พ ฟ ภ ม ย ร"], ans: 1 },
+        { q: "อักษรสูงในภาษาไทยมีทั้งหมดกี่ตัว?", choices: ["๙ ตัว", "๑๑ ตัว", "๒๔ ตัว", "๑๔ ตัว"], ans: 1 },
+        { q: "เทคนิคช่วยจำ 'ผีฝากถุงข้าวสารให้ฉัน' ใช้สำหรับจำอักษรหมู่ใด?", choices: ["อักษรกลาง", "อักษรต่ำเดี่ยว", "อักษรสูง", "อักษรต่ำคู่"], ans: 2 },
+        { q: "อักษรต่ำมีทั้งหมดกี่ตัว?", choices: ["๑๑ ตัว", "๙ ตัว", "๑๔ ตัว", "๒๔ ตัว"], ans: 3 },
+        { q: "อักษรกลางคำเป็น สามารถผันวรรณยุกต์ได้ครบกี่เสียง?", choices: ["๓ เสียง", "๕ เสียง", "๔ เสียง", "๒ เสียง"], ans: 1 },
+        { q: "คำว่า 'ข่า' (อักษรสูง รูปเอก) มีเสียงวรรณยุกต์ใด?", choices: ["เสียงโท", "เสียงจัตวา", "เสียงเอก", "เสียงสามัญ"], ans: 2 },
+        { q: "คำว่า 'น้า' (อักษรต่ำ รูปวรรณยุกต์โท) ออกเสียงวรรณยุกต์ใด?", choices: ["เสียงโท", "เสียงตรี", "เสียงเอก", "เสียงจัตวา"], ans: 1 },
+        { q: "คำตายอักษรกลาง เช่นคำว่า 'กะ' มีพื้นเสียงเป็นเสียงวรรณยุกต์ใด?", choices: ["เสียงสามัญ", "เสียงโท", "เสียงเอก", "เสียงตรี"], ans: 2 },
+        { q: "คำว่า 'เสือ' (อักษรสูง คำเป็น ไร้รูปวรรณยุกต์) มีพื้นเสียงใด?", choices: ["เสียงสามัญ", "เสียงเอก", "เสียงโท", "เสียงจัตวา"], ans: 3 }
+      ],
+      // บทที่ 3: สำนวน สุภาษิต คำพังเพย (10 ข้อ)
+      [
+        { q: "สำนวน 'ขี่ช้างจับตั๊กแตน' มีความหมายตรงกับข้อใด?", choices: ["ทำสิ่งที่ยากลำบากเกินตัว", "ลงทุนมากแต่ได้ผลตอบแทนน้อย", "มีความพยายามอย่างยิ่งยวด", "หลอกลวงผู้อื่น"], ans: 1 },
+        { q: "คนที่มีรายได้ไม่พอกับรายจ่าย ตรงกับสำนวนไทยในข้อใด?", choices: ["ชักแม่น้ำทั้งห้า", "จับปลาสองมือ", "น้ำซึมบ่อทราย", "ชักหน้าไม่ถึงหลัง"], ans: 3 },
+        { q: "สำนวน 'จับปลาสองมือ' มีความหมายว่าอย่างไร?", choices: ["ทำสองอย่างพร้อมกันจนอาจไม่สำเร็จทั้งคู่", "มีความสามารถรอบด้าน", "ขยันทำงานไม่หยุดหย่อน", "จับสัตว์น้ำเก่ง"], ans: 0 },
+        { q: "สำนวน 'กบในกะลาครอบ' เปรียบเทียบกับบุคคลประเภทใด?", choices: ["คนที่ชอบเก็บตัวเงียบ", "คนที่มีความรู้น้อยแต่สำคัญตนว่ารู้มาก", "คนขี้ขลาดตาขาว", "คนยากจน"], ans: 1 },
+        { q: "สำนวน 'น้ำขึ้นให้รีบตัก' สื่อความหมายถึงเรื่องใด?", choices: ["การประหยัดน้ำใช้", "เมื่อมีโอกาสดีควรรีบคว้าไว้", "การเตรียมพร้อมรับภัยธรรมชาติ", "การตื่นแต่เช้ามาทำงาน"], ans: 1 },
+        { q: "สำนวน 'งมเข็มในมหาสมุทร' หมายถึงการกระทำแบบใด?", choices: ["การดำน้ำลึก", "การทำงานด้วยความประมาท", "ค้นหาสิ่งที่หายากยิ่งและแทบเป็นไปไม่ได้", "การเสี่ยงภัยอันตราย"], ans: 2 },
+        { q: "'ไก่เห็นตีนงู งูเห็นนมไก่' หมายถึงข้อใด?", choices: ["เป็นศัตรูกันตลอดกาล", "ร่วมมือกันทำความชั่ว", "ต่างฝ่ายต่างรู้ความลับหรือเล่ห์เหลี่ยมของกัน", "เป็นมิตรแท้ต่อกัน"], ans: 2 },
+        { q: "'ชี้โพรงให้กระรอก' มีความหมายตรงกับข้อใด?", choices: ["บอกช่องทางให้ผู้อื่นทำความผิดหรือเอาเปรียบ", "การแนะนำสิ่งดีๆ ให้เพื่อน", "การช่วยเหลือสัตว์ป่า", "การพูดจาเพ้อเจ้อ"], ans: 0 },
+        { q: "ข้อใดจัดเป็น 'สุภาษิต' ที่เน้นการสั่งสอนคติธรรมโดยตรง?", choices: ["แกะดำ", "ไก่ได้พลอย", "ทำดีได้ดี ทำชั่วได้ชั่ว", "หัวล้านได้หวี"], ans: 2 },
+        { q: "'รักวัวให้ผูก รักลูกให้ตี' เป็นถ้อยคำประเภทใด?", choices: ["คำคมวัยรุ่น", "ปริศนาคำทาย", "สุภาษิตสอนใจ", "บทกลอน"], ans: 2 }
+      ],
+      // บทที่ 4: คำราชาศัพท์และคำสุภาพ (10 ข้อ)
+      [
+        { q: "คำราชาศัพท์ 'พระเนตร' หมายถึงอวัยวะส่วนใด?", choices: ["หู", "จมูก", "ดวงตา", "ปาก"], ans: 2 },
+        { q: "คำราชาศัพท์ 'พระกรรณ' หมายถึงอวัยวะส่วนใด?", choices: ["หู", "แขน", "ศีรษะ", "ฟัน"], ans: 0 },
+        { q: "คำราชาศัพท์ 'เสวย' สำหรับพระมหากษัตริย์ มีความหมายว่าอย่างไร?", choices: ["นอนหลับ", "รับประทาน (กิน)", "เดินทาง", "แต่งตัว"], ans: 1 },
+        { q: "คำว่า 'บรรทม' มีความหมายตรงกับคำสามัญใด?", choices: ["นั่ง", "นอน", "ยืน", "เดิน"], ans: 1 },
+        { q: "คำว่า 'เสด็จพระราชดำเนิน' มีความหมายว่าอย่างไร?", choices: ["กลับมา", "วิ่งหนี", "พักผ่อน", "เดินทางไป"], ans: 3 },
+        { q: "พระภิกษุสงฆ์รับประทานอาหาร ใช้คำว่าอะไร?", choices: ["เสวย", "รับประทาน", "ฉัน", "บริโภค"], ans: 2 },
+        { q: "พระภิกษุสงฆ์นอนหลับ เรียกว่าอะไร?", choices: ["บรรทม", "จำวัด", "จำศีล", "จำพรรษา"], ans: 1 },
+        { q: "คำราชาศัพท์ของ 'จดหมาย' สำหรับพระมหากษัตริย์ คือข้อใด?", choices: ["พระบรมราโชวาท", "พระราชดำรัส", "พระราชสาส์น", "พระราชหัตถเลขา"], ans: 3 },
+        { q: "คำสุภาพของคำว่า 'ผักบุ้ง' คือคำว่าอะไร?", choices: ["ผักทอดยอด", "ผักรู้นอน", "ผักสามหาว", "ฟักเหลือง"], ans: 0 },
+        { q: "คำสุภาพของคำว่า 'ปลาช่อน' คือข้อใด?", choices: ["ปลามัจฉะ", "ปลาหาง", "ปลายาว", "ปลาดำ"], ans: 1 }
+      ]
+    ];
+
+    let currentQuizLesson = 0;
+    let currentQuizIndex = 0;
+    let currentQuizScore = 0;
+
+    function startLessonQuiz(lessonIdx) {
+      currentQuizLesson = lessonIdx;
+      currentQuizIndex = 0;
+      currentQuizScore = 0;
+
+      const badge = document.getElementById('quiz-lesson-badge');
+      const title = document.getElementById('quiz-lesson-title');
+      badge.innerText = lessons[lessonIdx].badge;
+      title.innerText = `แบบทดสอบ: ${lessons[lessonIdx].title} (10 ข้อ)`;
+
+      document.getElementById('quiz-body').classList.remove('hidden');
+      document.getElementById('quiz-result-panel').classList.add('hidden');
+
+      renderQuizQuestion();
+      showScreen('quiz');
+    }
+
+    // ฟังก์ชันแสดงคำถามพร้อมสลับตำแหน่งชอยส์แบบสุ่ม (Shuffle) ไม่ให้คำตอบกองที่ข้อเดิม
+    function renderQuizQuestion() {
+      const qList = lessonQuizzes[currentQuizLesson];
+      const qData = qList[currentQuizIndex];
+      document.getElementById('quiz-current-num').innerText = currentQuizIndex + 1;
+      document.getElementById('quiz-question-text').innerText = `${currentQuizIndex + 1}. ${qData.q}`;
+
+      const container = document.getElementById('quiz-choices-container');
+      container.innerHTML = '';
+
+      // นำตัวเลือกมาแปลงเป็น Object เพื่อจับคู่ความถูกต้อง แล้วสุ่มสลับตำแหน่ง (Shuffle)
+      const shuffledChoices = qData.choices.map((text, idx) => ({
+        text: text,
+        isCorrect: (idx === qData.ans)
+      })).sort(() => Math.random() - 0.5);
+
+      shuffledChoices.forEach((choiceObj, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'w-full text-left p-3.5 rounded-xl border border-slate-200 hover:border-blue-500 hover:bg-blue-50/60 font-medium text-slate-700 transition flex items-center justify-between text-sm';
+        btn.innerHTML = `<span>${String.fromCharCode(65 + idx)}. ${choiceObj.text}</span><i class="fa-regular fa-circle text-slate-300"></i>`;
+        btn.onclick = () => selectQuizAnswer(choiceObj.isCorrect);
+        container.appendChild(btn);
+      });
+    }
+
+    function selectQuizAnswer(isCorrect) {
+      if (isCorrect) {
+        currentQuizScore++;
+        playBeep(520, 'sine', 0.1);
+      } else {
+        playBeep(220, 'square', 0.15);
+      }
+
+      currentQuizIndex++;
+      if (currentQuizIndex < lessonQuizzes[currentQuizLesson].length) {
+        renderQuizQuestion();
+      } else {
+        finishLessonQuiz();
+      }
+    }
+
+    function finishLessonQuiz() {
+      document.getElementById('quiz-body').classList.add('hidden');
+      document.getElementById('quiz-result-panel').classList.remove('hidden');
+
+      document.getElementById('quiz-result-title').innerText = `ผลการทดสอบ ${lessons[currentQuizLesson].title}`;
+      document.getElementById('quiz-score-display').innerText = currentQuizScore;
+
+      currentUser.lessonScores[currentQuizLesson] = currentQuizScore;
+      const xpGained = (currentQuizScore * 10) + 50;
+      currentUser.xp += xpGained;
+      document.getElementById('quiz-xp-gain').innerText = `+${xpGained} XP สะสมเข้าโปรไฟล์`;
+
+      saveUser();
+    }
+
+    // 6. มินิเกมสายฟ้าแลบ คลังโจทย์ 50 ข้อ สุ่มหมุนเวียนและสลับชอยส์
+    const game50Pool = [
+      { q: "'ความสุข' จัดเป็นคำนามชนิดใด?", opts: ["สามานยนาม", "วิสามานยนาม", "อาการนาม", "ลักษณนาม"], a: 2 },
+      { q: "'นกบิน' คำว่า 'บิน' คือคำกริยาชนิดใด?", opts: ["อกรรมกริยา", "สกรรมกริยา", "กริยาช่วย", "วิกตรรถกริยา"], a: 0 },
+      { q: "'ดอกไม้หอม' คำว่า 'หอม' ทำหน้าที่เป็นคำชนิดใด?", opts: ["คำนาม", "คำกริยา", "คำบุพบท", "คำวิเศษณ์"], a: 3 },
+      { q: "พยัญชนะไทยมีทั้งหมดกี่ตัว?", opts: ["42 ตัว", "44 ตัว", "46 ตัว", "40 ตัว"], a: 1 },
+      { q: "อักษรสูงมีทั้งหมดกี่ตัว?", opts: ["9 ตัว", "24 ตัว", "14 ตัว", "11 ตัว"], a: 3 },
+      { q: "ข้อใดเป็นอักษรกลางทั้งหมด?", opts: ["ข ฉ ถ ผ ส", "ก จ ด ต บ ป อ", "ค ง ช ซ ท", "พ ฟ ภ ม ย"], a: 1 },
+      { q: "คำราชาศัพท์ 'พระโอษฐ์' แปลว่าอะไร?", opts: ["ตา", "ปาก", "หู", "จมูก"], a: 1 },
+      { q: "คำราชาศัพท์ 'พระพาหา' แปลว่าอะไร?", opts: ["แขน", "ขา", "นิ้ว", "หัวเข่า"], a: 0 },
+      { q: "คำราชาศัพท์ 'พระมาลา' แปลว่าอะไร?", opts: ["เสื้อ", "รองเท้า", "หมวก", "แหวน"], a: 2 },
+      { q: "คำราชาศัพท์ 'สรงน้ำ' แปลว่าอะไร?", opts: ["อาบน้ำ", "ดื่มน้ำ", "ข้ามน้ำ", "รดน้ำต้นไม้"], a: 0 },
+      { q: "คำว่า 'จำวัด' หมายถึงการกระทำใดของพระภิกษุ?", opts: ["รับประทาน", "นอนหลับ", "สวดมนต์", "เดินทาง"], a: 1 },
+      { q: "คำว่า 'ฉัน' ในภาษาพระสงฆ์หมายถึงอะไร?", opts: ["นอน", "อาบน้ำ", "เทศนา", "รับประทานอาหาร"], a: 3 },
+      { q: "'ผักรู้นอน' คือคำสุภาพของผักชนิดใด?", opts: ["ผักบุ้ง", "ผักชี", "ผักกระเฉด", "ผักตำลึง"], a: 2 },
+      { q: "'ฟักเหลือง' คือคำสุภาพของผลไม้/พืชชนิดใด?", opts: ["กล้วย", "มะม่วง", "ส้ม", "ฟักทอง"], a: 3 },
+      { q: "'ช้าง 1 เชือก' คำว่า 'เชือก' เป็นลักษณนามของช้างประเภทใด?", opts: ["ช้างบ้านที่เลี้ยงไว้", "ช้างป่า", "ช้างศึกหลวง", "รูปปั้นช้าง"], a: 0 },
+      { q: "'ช้าง 1 โขลง' คำว่า 'โขลง' ใช้กับช้างแบบใด?", opts: ["ช้างบ้านตัวเดียว", "ช้างศึก", "ช้างป่าที่อยู่รวมกัน", "ช้างเผือก"], a: 2 },
+      { q: "'ขี่ช้างจับตั๊กแตน' สื่อถึงการทำสิ่งใด?", opts: ["ทำสิ่งง่ายดาย", "ความกล้าหาญ", "ลงทุนมากได้ผลน้อย", "การล่าสัตว์"], a: 2 },
+      { q: "'ชักหน้าไม่ถึงหลัง' มีความหมายว่าอย่างไร?", opts: ["เดินสะดุดล้ม", "ทำงานชักช้า", "เสื้อผ้าคับ", "เงินไม่พอใช้จ่าย"], a: 3 },
+      { q: "'จับปลาสองมือ' หมายถึงอะไร?", opts: ["ความขยัน", "ทำสองสิ่งพร้อมกันจนอาจเสีย", "การตกปลาเก่ง", "ทำงานเป็นทีม"], a: 1 },
+      { q: "'กบในกะลาครอบ' หมายถึงบุคคลใด?", opts: ["ผู้มีความรู้น้อยแต่คิดว่าตนรู้มาก", "คนรักสงบ", "คนเก็บตัว", "คนยากไร้"], a: 0 },
+      { q: "'น้ำขึ้นให้รีบตัก' สื่อถึงเรื่องใด?", opts: ["การตักน้ำกิน", "รีบคว้าโอกาสดีที่มี", "การประหยัด", "การรักษาสิ่งแวดล้อม"], a: 1 },
+      { q: "'งมเข็มในมหาสมุทร' หมายถึงอะไร?", opts: ["การดำน้ำลึก", "การหาของหาย", "ทำสิ่งที่ยากแทบเป็นไปไม่ได้", "ความเพียรพยายาม"], a: 2 },
+      { q: "'ไก่เห็นตีนงู งูเห็นนมไก่' หมายถึงอะไร?", opts: ["เป็นมิตรกัน", "การต่อสู้กัน", "ความสามัคคี", "ต่างฝ่ายรู้ความลับของกัน"], a: 3 },
+      { q: "'ชี้โพรงให้กระรอก' หมายถึงอะไร?", opts: ["การแนะแนวการเรียน", "บอกช่องทางให้คนทำผิด", "การปลูกป่า", "การเอื้อเฟื้อ"], a: 1 },
+      { q: "'ทำดีได้ดี ทำชั่วได้ชั่ว' เป็นถ้อยคำประเภทใด?", opts: ["คำพังเพย", "สุภาษิต", "สำนวนสแลง", "คำคม"], a: 1 },
+      { q: "'รักวัวให้ผูก รักลูกให้ตี' จัดเป็นอะไร?", opts: ["สุภาษิตสอนใจ", "คำทาย", "บทเพลง", "เรื่องเล่า"], a: 0 },
+      { q: "อักษรต่ำมีทั้งหมดกี่ตัว?", opts: ["11 ตัว", "24 ตัว", "9 ตัว", "14 ตัว"], a: 1 },
+      { q: "อักษรกลางคำเป็น ผันได้กี่เสียง?", opts: ["3 เสียง", "4 เสียง", "5 เสียง", "2 เสียง"], a: 2 },
+      { q: "คำว่า 'บ้าน' (อักษรกลาง รูปโท) ออกเสียงวรรณยุกต์ใด?", opts: ["เสียงเอก", "เสียงตรี", "เสียงจัตวา", "เสียงโท"], a: 3 },
+      { q: "คำว่า 'ม้า' (อักษรต่ำ รูปโท) ออกเสียงวรรณยุกต์ใด?", opts: ["เสียงโท", "เสียงตรี", "เสียงเอก", "เสียงจัตวา"], a: 1 },
+      { q: "คำว่า 'ขา' (อักษรสูง คำเป็น ไร้รูป) พื้นเสียงวรรณยุกต์คือ?", opts: ["เสียงสามัญ", "เสียงจัตวา", "เสียงเอก", "เสียงโท"], a: 1 },
+      { q: "คำว่า 'กะ' จัดเป็นคำเป็นหรือคำตาย?", opts: ["คำตาย", "คำเป็น", "คำครุ", "คำลหุ"], a: 0 },
+      { q: "มาตราตัวสะกดในภาษาไทยมีกี่มาตรา?", opts: ["7 มาตรา", "9 มาตรา", "8 มาตรา (ไม่นับ ก กา)", "10 มาตรา"], a: 2 },
+      { q: "คำว่า 'ภาพ' อยู่ในมาตราตัวสะกดแม่ใด?", opts: ["แม่กด", "แม่กน", "แม่กบ", "แม่กก"], a: 2 },
+      { q: "คำว่า 'กาล' อยู่ในมาตราตัวสะกดแม่ใด?", opts: ["แม่กล", "แม่เกย", "แม่กง", "แม่กน"], a: 0 },
+      { q: "คำว่า 'เมฆ' อยู่ในมาตราตัวสะกดแม่ใด?", opts: ["แม่กบ", "แม่กด", "แม่กก", "แม่กง"], a: 2 },
+      { q: "คำว่า 'มงกุฎ' สะกดด้วยมาตราใด?", opts: ["แม่กน", "แม่กก", "แม่กบ", "แม่กด"], a: 3 },
+      { q: "ข้อใดคือสระเสียงสั้น (รัสสระ)?", opts: ["อี", "อา", "อิ", "อู"], a: 2 },
+      { q: "ข้อใดคือสระเสียงยาว (ทีฆสระ)?", opts: ["อะ", "อา", "อุ", "เอะ"], a: 1 },
+      { q: "คำว่า 'พากเพียร' เขียนถูกต้องหรือไม่?", opts: ["ผิด ต้องเขียนว่า พากย์เพียร", "ถูกต้อง", "ผิด ต้องเขียนว่า ภาคเพียร", "ผิด"], a: 1 },
+      { q: "คำว่า 'อนุญาต' มีสระอิ บน ต เต่า หรือไม่?", opts: ["มี (อนุญาติ)", "มีทั้งสองแบบ", "ไม่มี (อนุญาต)", "แล้วแต่บริบท"], a: 2 },
+      { q: "คำว่า 'กะเพรา' เขียนอย่างไรถูกต้อง?", opts: ["กระเพรา", "กะเพรา", "กะเพา", "กระเพลา"], a: 1 },
+      { q: "คำว่า 'รสชาติ' คำว่า ชาติ มีสระอิ หรือไม่?", opts: ["ไม่มี (รสชาต)", "เขียนได้ทั้งสองแบบ", "ไม่มีข้อถูก", "มี (รสชาติ)"], a: 3 },
+      { q: "'พระบาท' ในคำราชาศัพท์ หมายถึงอวัยวะใด?", opts: ["มือ", "เท้า", "ขา", "เข่า"], a: 1 },
+      { q: "'พระหัตถ์' ในคำราชาศัพท์ หมายถึงอวัยวะใด?", opts: ["เท้า", "หัวใจ", "มือ", "ใบหน้า"], a: 2 },
+      { q: "'ทรงพระประชวร' มีความหมายว่าอย่างไร?", opts: ["ป่วย / ไม่สบาย", "โกรธ", "หัวเราะ", "เดินทาง"], a: 0 },
+      { q: "'สวรรคต' ใช้สำหรับการตายของบุคคลระดับใด?", opts: ["พระภิกษุ", "ข้าราชการ", "พระมหากษัตริย์", "ประชาชน"], a: 2 },
+      { q: "'มรณภาพ' ใช้กับการตายของใคร?", opts: ["พระภิกษุสงฆ์", "พระมหากษัตริย์", "สามัญชน", "สัตว์ป่า"], a: 0 },
+      { q: "'ปลาหาง' คือคำสุภาพของปลาชนิดใด?", opts: ["ปลาดุก", "ปลาช่อน", "ปลาหมอ", "ปลาทู"], a: 1 },
+      { q: "'ผักทอดยอด' คือคำสุภาพของผักชนิดใด?", opts: ["ผักคะน้า", "กะหล่ำปลี", "ชะอม", "ผักบุ้ง"], a: 3 }
+    ];
+
+    let gameTimer = null;
+    let gameTimeLeft = 30;
+    let gameScore = 0;
+    let gameLives = 3;
+    let gameCombo = 0;
+
+    function startGame() {
+      gameTimeLeft = 30;
+      gameScore = 0;
+      gameLives = 3;
+      gameCombo = 0;
+
+      document.getElementById('game-score').innerText = '0';
+      document.getElementById('game-timer').innerText = '30s';
+      document.getElementById('game-combo').innerText = 'x0';
+      updateHearts();
+
+      document.getElementById('game-play-area').classList.remove('hidden');
+      document.getElementById('game-over-panel').classList.add('hidden');
+
+      showScreen('game');
+      nextGameQuestion();
+
+      clearInterval(gameTimer);
+      gameTimer = setInterval(() => {
+        gameTimeLeft--;
+        document.getElementById('game-timer').innerText = `${gameTimeLeft}s`;
+        if (gameTimeLeft <= 0) endGame();
+      }, 1000);
+    }
+
+    function updateHearts() {
+      const heartsContainer = document.getElementById('game-hearts');
+      heartsContainer.innerHTML = '';
+      for (let i = 0; i < 3; i++) {
+        if (i < gameLives) {
+          heartsContainer.innerHTML += '<i class="fa-solid fa-heart"></i>';
+        } else {
+          heartsContainer.innerHTML += '<i class="fa-regular fa-heart text-slate-300"></i>';
+        }
+      }
+    }
+
+    function nextGameQuestion() {
+      const item = game50Pool[Math.floor(Math.random() * game50Pool.length)];
+      document.getElementById('game-question').innerText = item.q;
+
+      // สุ่มสลับตัวเลือกของมินิเกม
+      const optionsWithIndex = item.opts.map((opt, i) => ({ opt, isCorrect: i === item.a }));
+      optionsWithIndex.sort(() => Math.random() - 0.5);
+
+      const optsContainer = document.getElementById('game-options');
+      optsContainer.innerHTML = '';
+
+      optionsWithIndex.forEach(obj => {
+        const btn = document.createElement('button');
+        btn.className = 'bg-slate-100 hover:bg-blue-600 hover:text-white p-4 rounded-2xl font-bold text-slate-700 transition shadow-sm border border-slate-200 text-sm md:text-base';
+        btn.innerText = obj.opt;
+        btn.onclick = () => handleGameAnswer(obj.isCorrect);
+        optsContainer.appendChild(btn);
+      });
+    }
+
+    function handleGameAnswer(isCorrect) {
+      if (isCorrect) {
+        gameCombo++;
+        const addedScore = 10 + (gameCombo * 2);
+        gameScore += addedScore;
+        document.getElementById('game-score').innerText = gameScore;
+        document.getElementById('game-combo').innerText = `x${gameCombo}`;
+        playBeep(700, 'triangle', 0.1);
+      } else {
+        gameCombo = 0;
+        gameLives--;
+        document.getElementById('game-combo').innerText = 'x0';
+        updateHearts();
+        playBeep(180, 'sawtooth', 0.2);
+        if (gameLives <= 0) {
+          endGame();
+          return;
+        }
+      }
+      nextGameQuestion();
+    }
+
+    function endGame() {
+      clearInterval(gameTimer);
+      document.getElementById('game-play-area').classList.add('hidden');
+      document.getElementById('game-over-panel').classList.remove('hidden');
+
+      document.getElementById('game-final-score').innerText = gameScore;
+      const xp = Math.floor(gameScore / 2);
+      document.getElementById('game-xp-earned').innerText = xp;
+
+      currentUser.xp += xp;
+      if (gameScore > (currentUser.highScoreGame || 0)) {
+        currentUser.highScoreGame = gameScore;
+      }
+      saveUser();
+    }
+
+    function endGameEarly() {
+      if (confirm('ต้องการออกจากการเล่นเกมหรือไม่?')) {
+        clearInterval(gameTimer);
+        showScreen('home');
+      }
+    }
+
+    // 7. พิมพ์เกียรติบัตร
+    function showCertificate() {
+      if (!currentUser) return;
+      document.getElementById('cert-student-name').innerText = currentUser.name || 'นักเรียนผู้ขยันหมั่นเพียร';
+      document.getElementById('cert-grade-no').innerText = `${currentUser.grade || '-'} (เลขประจำตัว: ${currentUser.no || '-'})`;
+
+      const totalScore = currentUser.lessonScores.reduce((acc, cur) => acc + (cur || 0), 0);
+      document.getElementById('cert-score-status').innerText = `${totalScore} / 40 คะแนน`;
+
+      const now = new Date();
+      const thaiMonths = ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
+      const dateStr = `${now.getDate()} ${thaiMonths[now.getMonth()]} พ.ศ. ${now.getFullYear() + 543}`;
+      document.getElementById('cert-date').innerText = dateStr;
+
+      showScreen('cert');
+    }
+
+    // เริ่มต้นระบบ
+    window.onload = loadUser;
+  </script>
+</body>
+</html> 
